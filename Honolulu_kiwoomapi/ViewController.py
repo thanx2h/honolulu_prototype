@@ -1,20 +1,20 @@
+from RelayNodeAndPy import NetworkController
 import DataModel as dm
-import json
 
 # pyqt
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5.QAxContainer import *
-from PyQt5.QtGui import *
-from datetime import datetime
+# from PyQt5.QtGui import *
+# from datetime import datetime
 
-form_class = uic.loadUiType("main_window.ui")[0]
-
+form_class = uic.loadUiType("Honolulu_kiwoomapi/main_window.ui")[0]
 
 class ViewController(QMainWindow, form_class):
     def __init__(self, model):
         super().__init__()
         self.model = model
+        self.nc = NetworkController();
         print("View Controller");
 
         ## kiwoom api init
@@ -25,29 +25,15 @@ class ViewController(QMainWindow, form_class):
         self.kiwoom.OnEventConnect.connect(self.event_connect)
         self.kiwoom.OnReceiveRealData.connect(self._OnReceiveRealData)
         self.kiwoom.OnReceiveTrData.connect(self._OnReceiveTrData)
-        self.kiwoom.OnReceiveRealData.connect(self._OnReceiveRealData)
-        self.kiwoom.OnReceiveChejanData.connect(self._OnReceiveChejanData)
-        self.kiwoom.OnReceiveConditionVer.connect(self._OnReceiveConditionVer)
-        self.kiwoom.OnReceiveTrCondition.connect(self._OnReceiveTrCondition)
-        self.kiwoom.OnReceiveRealCondition.connect(self._OnReceiveRealCondition)
+
+        # 사용 안함
+        # self.kiwoom.OnReceiveChejanData.connect(self._OnReceiveChejanData)
+        # self.kiwoom.OnReceiveConditionVer.connect(self._OnReceiveConditionVer)
+        # self.kiwoom.OnReceiveTrCondition.connect(self._OnReceiveTrCondition)
+        # self.kiwoom.OnReceiveRealCondition.connect(self._OnReceiveRealCondition)
 
         # UI event Trigger
         self.searchItemButton.clicked.connect(self.searchItem)
-
-    def event_connect(self, nErrCode):
-        if nErrCode == 0:
-            print("login success")
-            try:
-                self.statusbar.showMessage("login success")
-                self.getItemList()
-            except Exception as e:
-                print(e)
-        elif nErrCode == 100:
-            print("user data interchange fail")
-        elif nErrCode == 101:
-            print("server connection fail")
-        elif nErrCode == 102:
-            print("vision handling fail")
 
     def login(self):
         status = self.kiwoom.dynamicCall("GetConnectState()")
@@ -71,7 +57,7 @@ class ViewController(QMainWindow, form_class):
 
             # print(self.model.itemList)
         except Exception as e:
-            print(e)
+            print("getItemList : " + e)
 
     def searchItem(self):
         itemName = self.searchItemTextEdit.toPlainText()
@@ -82,75 +68,118 @@ class ViewController(QMainWindow, form_class):
                 print("name : " + item.itemName)
                 self.getHogaData(item.itemCode)
 
-    def _OnReceiveRealData(self, jongmokCode, realType, realData):
-        print("call _OnReceiveRealData")
-
-    def search(self, code):
-        print("call search")
-        self.kiwoom.dynamicCall("SetInputValue(QString, QString)", "종목코드", code)
-        print(self.kiwoom.dynamicCall("CommRqData(QString, QString, int, QString)", "주식기본정보", "opt10001", 0, "0001"));
-
-    def getChart(self, code):
-        print("call getChart")
-        self.kiwoom.dynamicCall("SetInputValue(QString, QString)", "종목코드", code)
-        today = datetime.today().strftime("%Y%m%d")
-        print("today : " + today)
-        self.kiwoom.dynamicCall("SetInputValue(QString, QString)", "기준일자", today)
-        self.kiwoom.dynamicCall("SetInputValue(QString, QString)", "수정주가구분 ", 0)
-        print(
-            self.kiwoom.dynamicCall("CommRqData(QString, QString, int, QString)", "주식일봉차트조회요청", "opt10081", 0, "0002"));
-
     def getHogaData(self, code):
         print("call getHogaData")
         self.kiwoom.dynamicCall("SetInputValue(QString, QString)", "종목코드", code)
         print(self.kiwoom.dynamicCall("CommRqData(QString, QString, int, QString)","주식호가", "opt10004", 0, "0003"));
 
-    # 수신 메시지 이벤트
-    def _OnReceiveMsg(self, scrNo, rQName, trCode, msg):
-        print("call 1")
+    # 사용하지 않음
+    # def search(self, code):
+    #     print("call search")
+    #     self.kiwoom.dynamicCall("SetInputValue(QString, QString)", "종목코드", code)
+    #     print(self.kiwoom.dynamicCall("CommRqData(QString, QString, int, QString)", "주식기본정보", "opt10001", 0, "0001"));
+    #
+    # def getChart(self, code):
+    #     print("call getChart")
+    #     self.kiwoom.dynamicCall("SetInputValue(QString, QString)", "종목코드", code)
+    #     today = datetime.today().strftime("%Y%m%d")
+    #     print("today : " + today)
+    #     self.kiwoom.dynamicCall("SetInputValue(QString, QString)", "기준일자", today)
+    #     self.kiwoom.dynamicCall("SetInputValue(QString, QString)", "수정주가구분 ", 0)
+    #     print(
+    #         self.kiwoom.dynamicCall("CommRqData(QString, QString, int, QString)", "주식일봉차트조회요청", "opt10081", 0, "0002"));
+
+    # 로그인 성공 여부 수신시 이벤트
+    def event_connect(self, nErrCode):
+        if nErrCode == 0:
+            print("login success")
+            try:
+                self.statusbar.showMessage("login success")
+                self.getItemList()
+            except Exception as e:
+                print(e)
+        elif nErrCode == 100:
+            print("user data interchange fail")
+        elif nErrCode == 101:
+            print("server connection fail")
+        elif nErrCode == 102:
+            print("vision handling fail")
 
     # Tran 수신시 이벤트
     def _OnReceiveTrData(self, scrNo, rQName, trCode, recordName, prevNext):
-        print("call 2")
+        print("call _OnReceiveTrData")
         print(scrNo + " " + rQName + " " + trCode + " " + recordName + " " + prevNext)
 
-        # cnt = self.kiwoom.dynamicCall("GetRepeatCnt(QString, QString)", trCode, recordName)
+        ihi = dm.ItemHogaInfo()
 
-        # print("cnt : " + cnt)
-        if trCode == "opt10001":
-            print("opt10001")
-            # for i in range(0, cnt+1):
-            strData1 = self.kiwoom.dynamicCall("CommRqData(QString, QString, int, QString)", trCode, rQName, 0, "종목명");
-            strData1 = strData1.strip();
-            strData2 = self.kiwoom.dynamicCall("CommRqData(QString, QString, int, QString)", trCode, rQName, 0, "시가총액");
-            strData2 = strData2.strip();
-            strData3 = self.kiwoom.dynamicCall("CommRqData(QString, QString, int, QString)", trCode, rQName, 0, "거래량");
-            strData3 = strData3.strip();
-            strData4 = self.kiwoom.dynamicCall("CommRqData(QString, QString, int, QString)", trCode, rQName, 0, "현재가");
-            strData4 = strData4.strip();
-            print(strData1 + " " + strData2 + " " + strData3 + " " + strData4)
+        # 주식 호가
+        if trCode == "opt10004":
+            buyPrice = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매수최우선호가")
+            buyAmount = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0,"매수최우선잔량")
+            ihi.setBuyInfo(1, buyPrice.strip(), buyAmount.strip())
 
-        elif trCode == "opt10081":
-            print("opt10081")
-            print("tr 데이터 : " + json.dumps(
-                self.kiwoom.dynamicCall("GetCommDataEx(QString, QString)", trCode, recordName)));
+            sellPrice = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매도최우선호가")
+            sellAmount = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0,"매도최우선잔량")
+            ihi.setSellInfo(1, sellPrice.strip(), sellAmount.strip())
+
+            for i in range(2, 5):
+                buyPrice = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매수"+str(i)+"차선호가")
+                buyAmount = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매수"+str(i)+"차선잔량")
+                try:
+                    # ihi.setItemHogaList()
+                    ihi.setBuyInfo(i, buyPrice.strip(), buyAmount.strip())
+                except Exception as e:
+                    print(e)
+                ihi.setBuyInfo(i, buyPrice.strip(), buyAmount.strip())
+                print(str(i) +": " + buyPrice + " " + buyAmount)
+
+                sellPrice = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매도"+str(i)+"차선호가")
+                sellAmount = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매도"+str(i)+"차선잔량")
+                ihi.setSellInfo(i,sellPrice.strip(), sellAmount.strip())
+                print(str(i) +": " + sellPrice + " " + sellAmount)
+
+                # print(ihi.buyInfo[0])
+                # print(ihi.buyInfo[1])
+                # print("\n")
+                # print(ihi.sellInfo[0])
+                # print(ihi.sellInfo[1])
+
+            # nc = NetworkController()
+            # nc.requestApiData(buyPriceStr+sellStr)
+            try:
+                # ihi.setItemHogaList()
+                self.nc.requestApiData(ihi.itemHogaInfoList)
+            except Exception as e:
+                print(e)
 
     # 실시간 시세 이벤트
     def _OnReceiveRealData(self, jongmokCode, realType, realData):
-        print("call 3")
+        print("call _OnReceiveRealData")
 
-    # 체결데이터를 받은 시점을 알려준다.
-    # sGubun – 0:주문체결통보, 1:잔고통보, 3:특이신호
-    # sFidList – 데이터 구분은 ‘;’ 이다.
-    def _OnReceiveChejanData(self, gubun, itemCnt, fidList):
-        print("call 4")
+    # 사용하지 않음
+    # # 수신 메시지 이벤트
+    # def _OnReceiveMsg(self, scrNo, rQName, trCode, msg):
+    #     print("call 1")
+    #
+    # # 체결데이터를 받은 시점을 알려준다.
+    # # sGubun – 0:주문체결통보, 1:잔고통보, 3:특이신호
+    # # sFidList – 데이터 구분은 ‘;’ 이다.
+    # def _OnReceiveChejanData(self, gubun, itemCnt, fidList):
+    #     print("call 4")
+    #
+    # # 로컬에 사용자조건식 저장 성공여부 응답 이벤트
+    # def _OnReceiveConditionVer(self, ret, msg):
+    #     print("call 5")
+    #
+    # def _OnReceiveTrCondition(self, scrNo, codeList, conditionName, index, next):
+    #     print("call 6")
+    #
+    # def _OnReceiveRealCondition(self, code, type, conditionName, conditionIndex):
+    #     print("call 6")
 
-    # 로컬에 사용자조건식 저장 성공여부 응답 이벤트
-    def _OnReceiveConditionVer(self, ret, msg):
-        print("call 5")
-
-    def _OnReceiveTrCondition(self, scrNo, codeList, conditionName, index, next):
-        print("call 6")
-
-    def _OnReceiveRealCondition(self, code, type, conditionName, conditionIndex):
-        print("call 6")
+    # def requestApiData(self, data):
+    #     url = "http://localhost:8080/v1"
+    #     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    #     data = {'msg': 'hi'}
+    #     print(data)
+    #     r = requests.post(url, data=json.dumps(data), headers=headers)

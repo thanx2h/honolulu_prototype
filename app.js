@@ -19,8 +19,15 @@ const server = http.createServer(app);
 // 생성된 서버를 socket.io에 바인딩
 const io = socket(server);
 
+// app_py.js 선언
+const app_py = require('./app_py')
+
+// 데이터 parsing 관련 모듈 선언
+const bodyParser = require('body-parser');
+
 app.use('/css', express.static('./static/css'));
 app.use('/js', express.static('./static/js'));
+app.use(bodyParser.json())
 
 app.get('/', function(request, response){
   // console.log("The user has connected with '/'.");
@@ -34,6 +41,17 @@ app.get('/', function(request, response){
       response.end();
     }
   });
+});
+
+app.post('/v1', function(request, response){
+  console.log("/v1 in");
+  var msg = request.body;
+  console.log("python: " + msg);
+
+  response.writeHead(200, {'Content-Type':'text/plain'});
+  response.write("data translation success");
+  response.end();
+
 });
 
 io.sockets.on('connection', function(socket){
