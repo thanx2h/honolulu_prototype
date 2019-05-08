@@ -12,15 +12,30 @@ html, body {
   height:  100%;
 }
 
+/* 호가창 영역 */
+#hogaArea {
+  height: 90%;
+  width: 49.5%;
+  float: left;
+}
+
+#borderline {
+  height: 90%;
+  width: 1%;
+  float: left;
+  background-color: black;
+}
+
 /* 채팅 영역 */
 #chatArea {
   height: 90%;
-  width: 100%;
+  width: 49.5%;
+  float: left;
 
 }
 
 #chat{
-  height: 50%;
+  height: 90%;
   width: 100%;
   overflow-y: auto;
 }

@@ -2,7 +2,7 @@ var socket = io();
 
 function touchEnter(){
   if(event.keyCode == 13){
-         send();  // 실행할 이벤트
+         sendMsg();  // 실행할 이벤트
     }
 }
 
@@ -50,7 +50,7 @@ socket.on('update', function(data) {
 });
 
 // 전송 함수
-function send() {
+function sendMsg() {
   // 입력 데이터 가져오기
   var message = document.getElementById('message').value;
 
