@@ -8,13 +8,19 @@ html, body {
   border-radius: 20px;
   background-color: lightblue;
   text-align: center;
-  width: 50%;
+  width: 100%;
   height:  100%;
 }
 
 /* 채팅 영역 */
-#chat {
+#chatArea {
   height: 90%;
+  width: 100%;
+
+}
+
+#chat{
+  height: 50%;
   width: 100%;
   overflow-y: auto;
 }
