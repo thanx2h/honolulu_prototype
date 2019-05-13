@@ -10,24 +10,32 @@ class DataModel:
             self.itemCode = itemCode
             self.itemName = itemName
 
+        def getItemName(self):
+            return self.itemName
 
 class ItemHogaInfo:
     def __init__(self):
-        self.itemHogaInfoList = {}
+        self.itemHogaBuySellInfo = {}
+        self.itemHogaAllInfo = {}
 
     def setBuyInfo(self, idx, buyPrice, buyAmount):
         print(str(idx) + " " + buyPrice + " " + buyAmount)
         buyInfo = []
         buyInfo.append(buyPrice)
         buyInfo.append(buyAmount)
-        self.itemHogaInfoList["buy"+str(idx)] = buyInfo
+        self.itemHogaBuySellInfo["buy"+str(idx)] = buyInfo
 
     def setSellInfo(self, idx, sellPrice, sellAmount):
         print(str(idx) + " " + sellPrice + " " + sellAmount)
         sellInfo = []
         sellInfo.append(sellPrice)
         sellInfo.append(sellAmount)
-        self.itemHogaInfoList["sell"+str(idx)] = sellInfo
+        self.itemHogaBuySellInfo["sell"+str(idx)] = sellInfo
+
+    def getItemHogaInfoList(self):
+        self.itemHogaBuySellInfo["itemName"] = "테스트종목"
+        self.itemHogaAllInfo["All"] = self.itemHogaBuySellInfo
+        return self.itemHogaAllInfo
 
 # class ItemHogaInfoEncoder(json.JSONEncoder):
 #     def default(self, obj):

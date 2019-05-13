@@ -66,6 +66,7 @@ class ViewController(QMainWindow, form_class):
             if item.itemName == itemName:
                 print("code : " + item.itemCode)
                 print("name : " + item.itemName)
+                dm.DataModel.ItemInfo(item.itemCode, item.itemName)
                 self.getHogaData(item.itemCode)
 
     def getHogaData(self, code):
@@ -148,7 +149,7 @@ class ViewController(QMainWindow, form_class):
             # nc.requestApiData(buyPriceStr+sellStr)
             try:
                 # ihi.setItemHogaList()
-                self.nc.requestApiData(ihi.itemHogaInfoList)
+                self.nc.requestApiData(ihi.getItemHogaInfoList())
             except Exception as e:
                 print(e)
 

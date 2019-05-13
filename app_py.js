@@ -19,9 +19,6 @@ function loginKiwoomApi(){
   });
 }
 
-function callKiwoomApi() {
-PythonShell.run('main.py', options, function (err, results) {
-	if (err) throw err;
-	console.log('results: %j', results);
-});
+function requestHogaData() {
+  
 }

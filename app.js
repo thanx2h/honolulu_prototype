@@ -45,8 +45,9 @@ app.get('/', function(request, response){
 
 app.post('/v1', function(request, response){
   console.log("/v1 in");
-  var msg = request.body;
-  console.log("python: " + msg);
+  var data = request.body;
+  var all = JSON.stringify(data);
+  console.log("python: " + all);
 
   response.writeHead(200, {'Content-Type':'text/plain'});
   response.write("data translation success");
@@ -54,6 +55,11 @@ app.post('/v1', function(request, response){
 
 });
 
+function sendDataToHtml(data){
+
+}
+
+// 소켓 관련 메소드
 io.sockets.on('connection', function(socket){
 
   // 새로운 유저가 접속했을 경우 다른 소켓에게도 알림
@@ -89,4 +95,5 @@ io.sockets.on('connection', function(socket){
 //서버를 8080포트로 listen
 server.listen(8080, function(){
   console.log('Server is excuting...');
+
 });

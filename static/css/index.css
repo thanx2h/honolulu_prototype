@@ -2,6 +2,16 @@ html, body {
   height: 100%;
 }
 
+table {
+    width: 80%;
+    border: 1px solid #444444;
+    border-collapse: collapse;
+    margin: auto;
+  }
+  th, td {
+    border: 1px solid #444444;
+  }
+
 /* 메인 */
 #main {
   margin: auto;
@@ -17,6 +27,10 @@ html, body {
   height: 90%;
   width: 49.5%;
   float: left;
+}
+
+#blankTable{
+  height: 10%;
 }
 
 #borderline {
