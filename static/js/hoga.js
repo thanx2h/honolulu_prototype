@@ -30,37 +30,7 @@ function setHogaData(hoga) {
       for(var j=0; j<6; j++){
         row.insertCell(j).innerHTML = hoga;
       }
-
-      // var tr = document.createElement("tr");
-      // var td1 = document.createElement("td");
-      // // td1.setAttribute("width", "100"); // 넓이
-      // td1.innerText = hoga;
-      // var td2 = document.createElement("td");
-      // // td2.setAttribute("width", "200"); // 넓이
-      // td2.innerText = hoga;
-      // var td3 = document.createElement("td");
-      // // td1.setAttribute("width", "100"); // 넓이
-      // td3.innerText = hoga;
-      // var td4 = document.createElement("td");
-      // // td2.setAttribute("width", "200"); // 넓이
-      // td4.innerText = hoga;
-      // var td5 = document.createElement("td");
-      // // td1.setAttribute("width", "100"); // 넓이
-      // td5.innerText = hoga;
-      // var td6 = document.createElement("td");
-      // // td2.setAttribute("width", "200"); // 넓이
-      // td6.innerText = hoga;
-      // tr.appendChild(td1);
-      // tr.appendChild(td2);
-      // tr.appendChild(td3);
-      // tr.appendChild(td4);
-      // tr.appendChild(td5);
-      // tr.appendChild(td6);
-      //
-      // hogaTable.appendChild(tr);
-
     }
   }
-
 
 }
