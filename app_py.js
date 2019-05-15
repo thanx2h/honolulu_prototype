@@ -10,7 +10,7 @@ var options = {
 };
 
 // var myVar = setInterval(callKiwoomApi, 5000);
-loginKiwoomApi();
+// loginKiwoomApi();
 
 function loginKiwoomApi(){
   PythonShell.run('Honolulu_kiwoomapi/main.py', options, function (err, results) {
@@ -20,5 +20,5 @@ function loginKiwoomApi(){
 }
 
 function requestHogaData() {
-  
+
 }
