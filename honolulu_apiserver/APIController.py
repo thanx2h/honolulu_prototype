@@ -1,5 +1,5 @@
 import DataModel as dm
-
+from RelayNodeAndPy import NetworkController
 # pyqt
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
@@ -7,12 +7,13 @@ from PyQt5.QAxContainer import *
 # from PyQt5.QtGui import *
 # from datetime import datetime
 
-form_class = uic.loadUiType("main_window.ui")[0]
+form_class = uic.loadUiType("Honolulu_apiserver/main_window.ui")[0]
 
 class APIController(QMainWindow, form_class):
     def __init__(self, model):
         super().__init__()
         self.model = model
+        self.nc = NetworkController();
         print("View Controller");
         ## kiwoom api init
         self.kiwoom = QAxWidget("KHOPENAPI.KHOpenAPICtrl.1")
@@ -66,9 +67,9 @@ class APIController(QMainWindow, form_class):
                 print("code : " + item.itemCode)
                 print("name : " + item.itemName)
                 dm.DataModel.ItemInfo(item.itemCode, item.itemName)
-                # self.getHogaData(item.itemCode)
-                itemCode = item.itemCode
 
+                itemCode = item.itemCode
+                self.getHogaData(item.itemCode)
         return itemCode
 
     def getHogaData(self, code):
@@ -152,7 +153,7 @@ class APIController(QMainWindow, form_class):
             try:
                 print()
                 # ihi.setItemHogaList()
-                # self.nc.requestApiData(ihi.getItemHogaInfoList())
+                self.nc.requestApiData(ihi.getItemHogaInfoList())
             except Exception as e:
                 print(e)
 

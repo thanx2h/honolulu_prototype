@@ -3,6 +3,7 @@ from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from flask_script import Manager, Server
 import threading
+from flask_cors import CORS
 
 import APIController as ac
 import DataModel as dm
@@ -16,6 +17,11 @@ from PyQt5.QtWidgets import *
 
 app = Flask(__name__)
 api = Api(app)
+
+cors = CORS(app, resources={
+  r"/v1/*": {"origin": "*"},
+  r"/api/*": {"origin": "*"},
+})
 
 parser = reqparse.RequestParser()
 parser.add_argument('itemName', type=str)
@@ -98,6 +104,6 @@ def start_kiwoomapi():
 
 if __name__ == "__main__":
     start_kiwoomapi()
-    app.run(host='127.0.0.1', port=5000)
+    app.run(host='localhost', port=5000)
 
 

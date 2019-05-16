@@ -13,7 +13,7 @@ var options = {
 // loginKiwoomApi();
 
 function loginKiwoomApi(){
-  PythonShell.run('Honolulu_kiwoomapi/main.py', options, function (err, results) {
+  PythonShell.run('Honolulu_apiserver/Main.py', options, function (err, results) {
   	if (err) throw err;
   	console.log('results: %j', results);
   });

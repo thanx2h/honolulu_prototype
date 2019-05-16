@@ -2,15 +2,19 @@
 function sendItemName(itemName) {
   // 입력 데이터 가져오기
   var itemName = document.getElementById('itemName').value;
-
-  var xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log(xhr.responseText)
-    }
+  if( itemName == ""){
+    console.log("비어 있음");
+  }else{
+    console.log("값이 있음");
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+          console.log(xhr.responseText)
+        }
+      }
+      xhr.open('GET', 'http://localhost:5000/v1/getHogaData?itemName='+itemName, true);
+      xhr.send(null);
   }
-  xhr.open('GET', 'http://127.0.0.1:5000/v1/getHogaData?itemName='+itemName, true);
-  xhr.send(null);
 }
 
 function setHogaData(hoga) {

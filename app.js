@@ -29,6 +29,11 @@ app.use('/css', express.static('./static/css'));
 app.use('/js', express.static('./static/js'));
 app.use(bodyParser.json())
 
+app.set('views', __dirname + '/static/views');
+app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
+
+
 app.get('/', function(request, response){
   // console.log("The user has connected with '/'.");
   fs.readFile('./static/index.html', function(err, data){
@@ -49,9 +54,14 @@ app.post('/v1', function(request, response){
   var all = JSON.stringify(data);
   console.log("python: " + all);
 
-  response.writeHead(200, {'Content-Type':'text/plain'});
-  response.write("data translation success");
+  // response.redirect('http://localhost:8080/')
+  // response.render('index', { title: 'Express',name:'Terry' });
+
+  response.writeHead(200, {'Content-Type':'text/html'});
+  response.write(response.statusCode.toString());
   response.end();
+
+  // response.render('index', { title: 'Express',name:'Terry' });
 
 });
 
