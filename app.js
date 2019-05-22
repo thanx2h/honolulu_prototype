@@ -34,56 +34,71 @@ app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
 
-app.get('/', function(request, response){
-  // console.log("The user has connected with '/'.");
-  fs.readFile('./static/index.html', function(err, data){
-    if(err){
-      response.send('error')
-      console.log(err);
-    } else {
-      response.writeHead(200, {'Content-Type':'text/html'});
-      response.write(data);
-      response.end();
-    }
-  });
+app.get('/', function(request, response) {
+  console.log("The user has connected with '/'.");
+
+    var data = request.body;
+    var all = JSON.stringify(data);
+    console.log("python: " + all);
+
+    fs.readFile('./static/index.html', function(err, data){
+      if(err){
+        response.send('error')
+        console.log(err);
+      } else {
+        response.writeHead(200, {'Content-Type':'text/html'});
+        response.write(data);
+        response.end();
+      }
+    });
+
+    // var data = request.body;
+    // var all = JSON.stringify(data);
+    // console.log("python: " + all);
+    //
+    // response.render('index', {
+    //     result: all,
+    //     caller: request.body.caller
+    //   })
 });
 
-app.post('/v1', function(request, response){
+app.post('/v1', function(request, response) {
   console.log("/v1 in");
   var data = request.body;
   var all = JSON.stringify(data);
   console.log("python: " + all);
 
-  // response.redirect('http://localhost:8080/')
-  // response.render('index', { title: 'Express',name:'Terry' });
-
-  response.writeHead(200, {'Content-Type':'text/html'});
-  response.write(response.statusCode.toString());
-  response.end();
-
-  // response.render('index', { title: 'Express',name:'Terry' });
+  // response.render('index', {
+  //   result: "테스트",
+  //   caller: request.body.caller
+  // });
+  // response.redirect("/")
 
 });
 
-function sendDataToHtml(data){
+function sendDataToHtml(data) {
 
 }
 
 // 소켓 관련 메소드
-io.sockets.on('connection', function(socket){
+io.sockets.on('connection', function(socket) {
 
   // 새로운 유저가 접속했을 경우 다른 소켓에게도 알림
-  socket.on('newUser', function(name){
-    console.log(name+' is logged on');
+  socket.on('newUser', function(name) {
+    console.log(name + ' is logged on');
     // 소켓에 이름 저장
     socket.name = name;
 
     // 모든 소켓에게 전송
-    io.sockets.emit('update', {type : 'connect', name:'SERVER', message: name+' is logged on'});
+    io.sockets.emit('update', {
+      type: 'connect',
+      name: 'SERVER',
+      message: name + ' is logged on'
+    });
   });
 
   // 전송한 메세지 받기
-  socket.on('message', function(data){
+  socket.on('message', function(data) {
     // 받은 데이터에 누가 보냈는지 이름을 추가
     data.name = socket.name;
 
@@ -94,16 +109,20 @@ io.sockets.on('connection', function(socket){
   });
 
   // 접속 종료
-  socket.on('disconnect', function(){
+  socket.on('disconnect', function() {
     console.log(socket.name + ' is logged out');
 
-    socket.broadcast.emit('update', {type : 'disconnect', name:'SERVER', message: socket.name+" is logged out"})
+    socket.broadcast.emit('update', {
+      type: 'disconnect',
+      name: 'SERVER',
+      message: socket.name + " is logged out"
+    })
 
   })
 });
 
 //서버를 8080포트로 listen
-server.listen(8080, function(){
+server.listen(8080, function() {
   console.log('Server is excuting...');
 
 });

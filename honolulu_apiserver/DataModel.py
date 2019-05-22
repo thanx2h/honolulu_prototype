@@ -14,28 +14,53 @@ class DataModel:
             return self.itemName
 
 class ItemHogaInfo:
+    _instance = None
+
+    @classmethod
+    def _getInstance(cls):
+        return cls._instance
+
+    @classmethod
+    def instance(cls, *args, **kargs):
+        cls._instance = cls(*args, **kargs)
+        cls.instance = cls._getInstance
+        return cls._instance
+
     def __init__(self):
         self.itemHogaBuySellInfo = {}
         self.itemHogaAllInfo = {}
+        self.buyInfoList = []
+        self.sellInfoList = []
+
+    def clearData(self):
+        self.itemHogaBuySellInfo.clear();
+        self.itemHogaAllInfo.clear()
+        self.buyInfoList.clear()
+        self.sellInfoList.clear()
 
     def setBuyInfo(self, idx, buyPrice, buyAmount):
         print(str(idx) + " " + buyPrice + " " + buyAmount)
         buyInfo = []
         buyInfo.append(buyPrice)
         buyInfo.append(buyAmount)
-        self.itemHogaBuySellInfo["buy"+str(idx)] = buyInfo
+        self.buyInfoList.append(buyInfo)
 
     def setSellInfo(self, idx, sellPrice, sellAmount):
         print(str(idx) + " " + sellPrice + " " + sellAmount)
         sellInfo = []
         sellInfo.append(sellPrice)
         sellInfo.append(sellAmount)
-        self.itemHogaBuySellInfo["sell"+str(idx)] = sellInfo
+        self.sellInfoList.append(sellInfo)
 
-    def getItemHogaInfoList(self):
+    def setitemHogaAllInfo(self):
         self.itemHogaBuySellInfo["itemName"] = "테스트종목"
+        self.itemHogaBuySellInfo["buy"] = self.buyInfoList
+        self.itemHogaBuySellInfo["sell"] = self.sellInfoList
         self.itemHogaAllInfo["All"] = self.itemHogaBuySellInfo
+
+    def getitemHogaAllInfo(self):
         return self.itemHogaAllInfo
+
 
 # class ItemHogaInfoEncoder(json.JSONEncoder):
 #     def default(self, obj):

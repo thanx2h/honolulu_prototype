@@ -1,4 +1,5 @@
 import DataModel as dm
+from Main import APIServer
 from RelayNodeAndPy import NetworkController
 # pyqt
 from PyQt5.QtWidgets import *
@@ -7,7 +8,7 @@ from PyQt5.QAxContainer import *
 # from PyQt5.QtGui import *
 # from datetime import datetime
 
-form_class = uic.loadUiType("Honolulu_apiserver/main_window.ui")[0]
+form_class = uic.loadUiType("main_window.ui")[0]
 
 class APIController(QMainWindow, form_class):
     def __init__(self, model):
@@ -114,33 +115,35 @@ class APIController(QMainWindow, form_class):
         print("call _OnReceiveTrData")
         print(scrNo + " " + rQName + " " + trCode + " " + recordName + " " + prevNext)
 
-        ihi = dm.ItemHogaInfo()
+        # ihi = dm.ItemHogaInfo()
+        dm.ItemHogaInfo.instance().clearData()
 
         # 주식 호가
         if trCode == "opt10004":
             buyPrice = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매수최우선호가")
             buyAmount = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0,"매수최우선잔량")
-            ihi.setBuyInfo(1, buyPrice.strip(), buyAmount.strip())
+            dm.ItemHogaInfo.instance().setBuyInfo(1, buyPrice.strip(), buyAmount.strip())
 
             sellPrice = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매도최우선호가")
             sellAmount = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0,"매도최우선잔량")
-            ihi.setSellInfo(1, sellPrice.strip(), sellAmount.strip())
+            dm.ItemHogaInfo.instance().setSellInfo(1, sellPrice.strip(), sellAmount.strip())
 
             for i in range(2, 5):
                 buyPrice = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매수"+str(i)+"차선호가")
                 buyAmount = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매수"+str(i)+"차선잔량")
-                try:
-                    # ihi.setItemHogaList()
-                    ihi.setBuyInfo(i, buyPrice.strip(), buyAmount.strip())
-                except Exception as e:
-                    print(e)
-                ihi.setBuyInfo(i, buyPrice.strip(), buyAmount.strip())
-                print(str(i) +": " + buyPrice + " " + buyAmount)
+                dm.ItemHogaInfo.instance().setBuyInfo(i, buyPrice.strip(), buyAmount.strip())
+                # try:
+                #     # ihi.setItemHogaList()
+                #     dm.ItemHogaInfo.instance().setBuyInfo(i, buyPrice.strip(), buyAmount.strip())
+                # except Exception as e:
+                #     print(e)
+                # dm.ItemHogaInfo.instance().setBuyInfo(i, buyPrice.strip(), buyAmount.strip())
+                # print(str(i) +": " + buyPrice + " " + buyAmount)
 
                 sellPrice = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매도"+str(i)+"차선호가")
                 sellAmount = self.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", trCode, rQName, 0, "매도"+str(i)+"차선잔량")
-                ihi.setSellInfo(i,sellPrice.strip(), sellAmount.strip())
-                print(str(i) +": " + sellPrice + " " + sellAmount)
+                dm.ItemHogaInfo.instance().setSellInfo(i,sellPrice.strip(), sellAmount.strip())
+                # print(str(i) +": " + sellPrice + " " + sellAmount)
 
                 # print(ihi.buyInfo[0])
                 # print(ihi.buyInfo[1])
@@ -151,9 +154,11 @@ class APIController(QMainWindow, form_class):
             # nc = NetworkController()
             # nc.requestApiData(buyPriceStr+sellStr)
             try:
-                print()
+                dm.ItemHogaInfo.instance().setitemHogaAllInfo()
+                print(dm.ItemHogaInfo.instance().getitemHogaAllInfo())
                 # ihi.setItemHogaList()
-                self.nc.requestApiData(ihi.getItemHogaInfoList())
+                # self.nc.requestApiData(ihi.getItemHogaInfoList())
+                # APIServer.instance().setHogaAllData(dm.ItemHogaInfo.instance().getitemHogaAllInfo())
             except Exception as e:
                 print(e)
 
