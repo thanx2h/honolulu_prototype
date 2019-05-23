@@ -1,6 +1,6 @@
 var chatManager = new function(){
 
-  var interval    = 500;
+  var interval    = 1000;
   var xmlHttp     = new XMLHttpRequest();
   var finalDate   = '';
 
@@ -47,32 +47,32 @@ var chatManager = new function(){
         hogaTable.deleteRow(i);
       }
 
-      for(var i=0; i<4; i++) {
+      for(var i=0; i< all.sell.length; i++) {
         var row = hogaTableBody.insertRow(i)
-
-        for(var j=0; j<3; j++){
-          row.insertCell(j).innerHTML = all.buy[i][j];
+        for(var j=0; j<2; j++){
+          row.insertCell(j).innerHTML = all.sell[4-i-1][2-j-1];
         }
-
-        for(var j=3; j<6; j++){
-          row.insertCell(j).innerHTML = all.buy[i][j];
+        for(var j=2; j<4; j++){
+          row.insertCell(j).innerHTML = "";
         }
       }
 
-      for(var i=4; i<8; i++) {
+      var allLen = all.sell.length + all.buy.length
+
+      for(var i=all.sell.length; i< allLen; i++) {
         var row = hogaTableBody.insertRow(i)
-
-        for(var j=0; j<3; j++){
-          row.insertCell(j).innerHTML = all.sell[i][j];
+        for(var j=0; j<2; j++){
+          row.insertCell(j).innerHTML = "";
         }
-
-        for(var j=3; j<6; j++){
-          row.insertCell(j).innerHTML = all.sell[i][j];
+        for(var j=2; j<4; j++){
+          row.insertCell(j).innerHTML = all.buy[i-4][j-2];
         }
       }
-    // }
+    }
 
+    data = "";
   }
+
   this.startPolling = function(){
     // interval에서 지정한 시간마다 실행
     setInterval(this.proc, interval);
@@ -80,6 +80,23 @@ var chatManager = new function(){
 }
 
 function startPolling(){
-  // chatManager.startPolling();
-  chatManager.proc();
+
+  var hogaTableLen = hogaTableBody.rows.length;
+  console.log(hogaTableLen)
+
+  for(var i=hogaTableLen; i>0; i--){
+    console.log('delete')
+    hogaTable.deleteRow(i);
+  }
+
+  var itemName = document.getElementById('itemName').value;
+  if( itemName == ""){
+    console.log("startPolling, 비어 있음");
+  }else{
+    console.log("startPolling, 값이 있음");
+    // chatManager.startPolling();
+    // chatManager.proc();
+    chatManager.startPolling()
+  }
+
 }

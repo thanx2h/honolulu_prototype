@@ -1,5 +1,5 @@
 // 전송 함수
-function sendItemName(itemName) {
+function sendItemName() {
   // 입력 데이터 가져오기
   var itemName = document.getElementById('itemName').value;
   if( itemName == ""){
