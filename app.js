@@ -29,56 +29,24 @@ app.use('/css', express.static('./static/css'));
 app.use('/js', express.static('./static/js'));
 app.use(bodyParser.json())
 
-app.set('views', __dirname + '/static/views');
-app.set('view engine', 'ejs');
-app.engine('html', require('ejs').renderFile);
-
-
 app.get('/', function(request, response) {
   console.log("The user has connected with '/'.");
 
-    var data = request.body;
-    var all = JSON.stringify(data);
-    console.log("python: " + all);
-
-    fs.readFile('./static/index.html', function(err, data){
-      if(err){
-        response.send('error')
-        console.log(err);
-      } else {
-        response.writeHead(200, {'Content-Type':'text/html'});
-        response.write(data);
-        response.end();
-      }
-    });
-
-    // var data = request.body;
-    // var all = JSON.stringify(data);
-    // console.log("python: " + all);
-    //
-    // response.render('index', {
-    //     result: all,
-    //     caller: request.body.caller
-    //   })
-});
-
-app.post('/v1', function(request, response) {
-  console.log("/v1 in");
   var data = request.body;
   var all = JSON.stringify(data);
   console.log("python: " + all);
 
-  // response.render('index', {
-  //   result: "테스트",
-  //   caller: request.body.caller
-  // });
-  // response.redirect("/")
-
+  fs.readFile('./static/html/index.html', function(err, data){
+    if(err){
+      response.send('error')
+      console.log(err);
+    } else {
+      response.writeHead(200, {'Content-Type':'text/html'});
+      response.write(data);
+      response.end();
+    }
+  });
 });
-
-function sendDataToHtml(data) {
-
-}
 
 // 소켓 관련 메소드
 io.sockets.on('connection', function(socket) {
@@ -101,9 +69,7 @@ io.sockets.on('connection', function(socket) {
   socket.on('message', function(data) {
     // 받은 데이터에 누가 보냈는지 이름을 추가
     data.name = socket.name;
-
     console.log(data);
-
     // 보낸 사람을 제외한 나머지 유저에게 메세지 전송
     socket.broadcast.emit('update', data);
   });
@@ -117,7 +83,6 @@ io.sockets.on('connection', function(socket) {
       name: 'SERVER',
       message: socket.name + " is logged out"
     })
-
   })
 });
 
