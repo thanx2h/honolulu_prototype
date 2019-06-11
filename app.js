@@ -51,6 +51,12 @@ app.get('/', function(request, response) {
 // 소켓 관련 메소드
 io.sockets.on('connection', function(socket) {
 
+
+  // 임의의 방 입장
+  socket.on('joinRoom', function(data) {
+    socket.join('room' + data.roomId);
+  });
+
   // 새로운 유저가 접속했을 경우 다른 소켓에게도 알림
   socket.on('newUser', function(name) {
     console.log(name + ' is logged on');
@@ -65,13 +71,24 @@ io.sockets.on('connection', function(socket) {
     });
   });
 
-  // 전송한 메세지 받기
-  socket.on('message', function(data) {
-    // 받은 데이터에 누가 보냈는지 이름을 추가
-    data.name = socket.name;
-    console.log(data);
-    // 보낸 사람을 제외한 나머지 유저에게 메세지 전송
-    socket.broadcast.emit('update', data);
+  // // 전송한 메세지 받기
+  // socket.on('message', function(data) {
+  //   // 받은 데이터에 누가 보냈는지 이름을 추가
+  //   data.name = socket.name;
+  //   console.log(data);
+  //   // 보낸 사람을 제외한 나머지 유저에게 메세지 전송
+  //   socket.broadcast.emit('update', data);
+  // });
+
+  // Broadcast to room
+  socket.on('sendMessage', function(data) {
+    console.log(data)
+    io.sockets.in('room' + data.roomId).emit('update', data);
+  });
+
+  // Broadcast to room
+  socket.on('send:message', function(data) {
+    io.sockets.in('room' + data.roomId).emit('send:message', data.message);
   });
 
   // 접속 종료

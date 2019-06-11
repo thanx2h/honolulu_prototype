@@ -1,4 +1,5 @@
 var socket = io();
+var roomId = '';
 
 function touchEnter(){
   if(event.keyCode == 13){
@@ -20,7 +21,20 @@ socket.on('connect', function() {
 
 });
 
+function joinRoom(){
+  roomId = document.getElementById('itemName').value;
+  console.log(roomId);
+  if( itemName == ""){
+    console.log("joinRoom, 비어 있음");
+    // Join to room
+  }else{
+    console.log("joinRoom, 값이 있음");
+    socket.emit('joinRoom', {roomId: roomId});
+  }
+}
+
 socket.on('update', function(data) {
+  console.log("update : " + data);
   var chat = document.getElementById('chat');
 
   var message = document.createElement('div');
@@ -66,8 +80,14 @@ function sendMsg() {
   msg.appendChild(node);
   chat.appendChild(msg);
 
-  socket.emit('message', {
+  // socket.emit('message', {
+  //   type: 'message',
+  //   message: message
+  // });
+
+  socket.emit('sendMessage', {
     type: 'message',
+    roomId : roomId,
     message: message
   });
 
