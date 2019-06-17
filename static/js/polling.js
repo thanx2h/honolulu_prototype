@@ -1,8 +1,9 @@
 var chatManager = new function(){
 
-  var interval    = 1000;
+  var interval    = 10000;
   var xmlHttp     = new XMLHttpRequest();
   var finalDate   = '';
+  var pollingItemName = '';
 
   // Ajax Setting
   xmlHttp.onreadystatechange = function()
@@ -21,7 +22,8 @@ var chatManager = new function(){
   {
     // Ajax 통신
     xmlHttp.open("post", "http://localhost:5000/v1/getHogaData", true);
-    xmlHttp.send();
+    console.log("this.pollingItemName : " + this.pollingItemName)
+    xmlHttp.send("{pollingItemName:"+this.pollingItemName);
   }
 
   // 받은 데이터 보여주기
@@ -79,6 +81,10 @@ var chatManager = new function(){
   }
 }
 
+function setPollingItemName() {
+	this.pollingItemName = document.getElementById('itemName').value;;
+}
+
 function startPolling(){
 
   var hogaTableLen = hogaTableBody.rows.length;
@@ -98,5 +104,4 @@ function startPolling(){
     // chatManager.proc();
     chatManager.startPolling()
   }
-
 }

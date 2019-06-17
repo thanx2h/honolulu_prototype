@@ -72,7 +72,7 @@ io.sockets.on('connection', function(socket) {
   });
 
   // // 전송한 메세지 받기
-  // socket.on('message', function(data) {
+  // socket.on('sendMessage', function(data) {
   //   // 받은 데이터에 누가 보냈는지 이름을 추가
   //   data.name = socket.name;
   //   console.log(data);
@@ -82,13 +82,9 @@ io.sockets.on('connection', function(socket) {
 
   // Broadcast to room
   socket.on('sendMessage', function(data) {
+    data.name = socket.name;
     console.log(data)
-    io.sockets.in('room' + data.roomId).emit('update', data);
-  });
-
-  // Broadcast to room
-  socket.on('send:message', function(data) {
-    io.sockets.in('room' + data.roomId).emit('send:message', data.message);
+    socket.broadcast.to('room' + data.roomId).emit('update', data);
   });
 
   // 접속 종료
