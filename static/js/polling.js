@@ -22,8 +22,9 @@ var chatManager = new function(){
   {
     // Ajax 통신
     xmlHttp.open("post", "http://localhost:5000/v1/getHogaData", true);
-    console.log("this.pollingItemName : " + this.pollingItemName)
-    xmlHttp.send("{pollingItemName:"+this.pollingItemName);
+    xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    console.log("pollingItemName="+this.pollingItemName)
+    xmlHttp.send("pollingItemName="+this.pollingItemName);
   }
 
   // 받은 데이터 보여주기
