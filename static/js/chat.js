@@ -1,5 +1,6 @@
 var socket = io();
 var roomId = '';
+var name = '';
 
 function touchEnter(){
   if(event.keyCode == 13){
@@ -9,7 +10,7 @@ function touchEnter(){
 
 // 접속 되었을 때 실행
 socket.on('connect', function() {
-  var name = prompt('반갑습니다. 닉네임을 입력해주세요', '');
+  name = prompt('반갑습니다. 닉네임을 입력해주세요', '');
   // var input = document.getElementById('message');
   // input.value = "Connection success";
 
@@ -24,17 +25,17 @@ socket.on('connect', function() {
 function joinRoom(){
   roomId = document.getElementById('itemName').value;
   console.log(roomId);
-  if( itemName == ""){
+  if(itemName == ""){
     console.log("joinRoom, 비어 있음");
     // Join to room
   }else{
     console.log("joinRoom, 값이 있음");
-    socket.emit('joinRoom', {roomId: roomId});
+    socket.emit('joinRoom', {roomId: roomId, name:name});
   }
 }
 
 socket.on('update', function(data) {
-  console.log("update : " + data);
+  console.log("chat.js, update : " + data.type);
   var chat = document.getElementById('chat');
 
   var message = document.createElement('div');

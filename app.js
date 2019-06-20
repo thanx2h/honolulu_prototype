@@ -51,24 +51,33 @@ app.get('/', function(request, response) {
 // 소켓 관련 메소드
 io.sockets.on('connection', function(socket) {
 
-
   // 임의의 방 입장
   socket.on('joinRoom', function(data) {
-    socket.join('room' + data.roomId);
+    console.log(data);
+    socket.join(data.roomId);
+
+    // 소켓에 이름 저장
+    socket.name = data.name;
+    // 방에있는 모든 소켓에게 전송
+    io.sockets.in(data.roomId).emit('update', {
+      type: 'connect',
+      name: 'SERVER',
+      message: data.name + ' is logged on, room : ' + data.roomId
+    });
   });
 
   // 새로운 유저가 접속했을 경우 다른 소켓에게도 알림
   socket.on('newUser', function(name) {
     console.log(name + ' is logged on');
     // 소켓에 이름 저장
-    socket.name = name;
-
-    // 모든 소켓에게 전송
-    io.sockets.emit('update', {
-      type: 'connect',
-      name: 'SERVER',
-      message: name + ' is logged on'
-    });
+    // socket.name = name;
+    //
+    // // 모든 소켓에게 전송
+    // io.sockets.emit('update', {
+    //   type: 'connect',
+    //   name: 'SERVER',
+    //   message: name + ' is logged on'
+    // });
   });
 
   // // 전송한 메세지 받기
@@ -84,7 +93,7 @@ io.sockets.on('connection', function(socket) {
   socket.on('sendMessage', function(data) {
     data.name = socket.name;
     console.log(data)
-    socket.broadcast.to('room' + data.roomId).emit('update', data);
+    socket.broadcast.to(data.roomId).emit('update', data);
   });
 
   // 접속 종료
