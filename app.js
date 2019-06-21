@@ -48,6 +48,9 @@ app.get('/', function(request, response) {
   });
 });
 
+var roomId = '';
+
+
 // 소켓 관련 메소드
 io.sockets.on('connection', function(socket) {
 
@@ -58,6 +61,9 @@ io.sockets.on('connection', function(socket) {
 
     // 소켓에 이름 저장
     socket.name = data.name;
+
+    // 퇴장을 위해 방 저장
+    roomId = data.roomId;
     // 방에있는 모든 소켓에게 전송
     io.sockets.in(data.roomId).emit('update', {
       type: 'connect',
@@ -100,11 +106,21 @@ io.sockets.on('connection', function(socket) {
   socket.on('disconnect', function() {
     console.log(socket.name + ' is logged out');
 
-    socket.broadcast.emit('update', {
+    socket.leave(roomId);
+
+    console.log(io.sockets.adapter.rooms);
+    
+    socket.broadcast.to(roomId).emit('update', {
       type: 'disconnect',
       name: 'SERVER',
-      message: socket.name + " is logged out"
-    })
+      message: socket.name + ' is logged out, room : ' + roomId
+    });
+
+    // socket.broadcast.emit('update', {
+    //   type: 'disconnect',
+    //   name: 'SERVER',
+    //   message: socket.name + " is logged out"
+    // })
   })
 });
 
