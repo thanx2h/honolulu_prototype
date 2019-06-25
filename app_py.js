@@ -11,7 +11,7 @@ var options = {
 
 // var myVar = setInterval(callKiwoomApi, 5000);
 // loginKiwoomApi();
-
+ 
 function loginKiwoomApi(){
   PythonShell.run('Honolulu_apiserver/Main.py', options, function (err, results) {
   	if (err) throw err;
